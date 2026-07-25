@@ -1,0 +1,61 @@
+#ifndef PREFIX_H
+#define PREFIX_H
+#include <map>
+#include <string>
+using namespace std;
+
+map<string, string> hash_types_prefix = {
+    {"1", "MD5"},
+    {"2a", "Blowfish/bycrypt"},
+    {"2b", "Blowfish/bycrypt"},
+    {"2y", "Blowfish/bycrypt"},
+    {"5", "SHA256crypt"},
+    {"6", "SHA512crypt"},
+    {"P","phpass/WordPress/Joomla"},
+    {"H","phpBB3"},
+    {"BLAKE2", "BLAKE2b-512"},
+    {"apr1", "Apache"},
+    {"DCC2", "Domain Cached Credentials 2 (DCC2), MS Cache 2"},
+    {"smd5", "AIX smd5"},
+    {"ssha256", "AIX ssha256"},
+    {"ssha1", "AIX ssha1"},
+    {"ssha512", "AIX ssha512"},
+    {"krb5pa", "Blowfish/bycrypt"},
+    {"S", "Drupal7"},
+    {"racf", "RACF"},
+    {"as400", "AS/400 DES"},
+    {"8", "Cisco-IOS $8$ (PBKDF2-SHA256) "},
+    {"9","Cisco-IOS $9$ (scrypt)"},
+    {"office","MS Office"},
+    {"cram_md5","CRAM-MD5 "},
+    {"pdf", "Acrobat PDF"},
+    {"postgres", "PostgreSQL CRAM (MD5)"},
+    {"mysqlna", "MySQL CRAM (SHA1) "},
+    {"bitcoin", "Bitcoin/Litecoin wallet.dat"},
+    {"sip", " SIP digest authentication (MD5) "},
+    {"7z", "7-Zip"},
+    {"shiro1", "Apache Shiro 1 SHA-512 "},
+    {"ecryptfs", "eCryptfs"},
+    {"RAR3", "RAR3-hp"},
+    {"rar5", "RAR5"},
+    {"krb5tgs", "Kerberos 5, etype 23, TGS-REP"},
+    {"axcrypt", "AxCrypt 1"},
+    {"axcrypt_sha1", "AxCrypt 1 in-memory SHA1"},
+    {"keepass", "KeePass AES"},
+    {"zip2", "WinZip"},
+    {"racf-kdfaes", "RACF KDFAES"},
+    {"cryptoapi", "Linux Kernel Crypto API (2.4)"},
+    {"itunes_backup", "iTunes backup"},
+    {"pbkdf2-sha512", "Python passlib pbkdf2-sha512"},
+    {"pbkdf2-sha256", "Python passlib pbkdf2-sha256"},
+    {"pbkdf2", "Python passlib pbkdf2-sha1"},
+    {"solarwinds", "SolarWinds Orion"},
+    {"telegram", "Telegram Desktop"},
+    {"SNMPv3", "SNMPv3"},
+    {"vmx", "VMware VMX"},
+    {"truecrypt", "TrueCrypt"},
+    {"veracrypt", "VeraCrypt"},
+    {"argon2id","Argon2"}
+};
+
+#endif
