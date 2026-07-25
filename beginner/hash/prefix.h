@@ -55,7 +55,9 @@ map<string, string> hash_types_prefix = {
     {"vmx", "VMware VMX"},
     {"truecrypt", "TrueCrypt"},
     {"veracrypt", "VeraCrypt"},
-    {"argon2id","Argon2"}
+    {"argon2id","Argon2"},
+    {"WINHELLO","Windows Hello PIN/Password"},
+    {"mongodb-scram","MongoDB ServerKey SCRAM-SHA-1/256"}
 };
 
 #endif
