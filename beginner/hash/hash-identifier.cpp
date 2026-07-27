@@ -76,8 +76,4 @@ int main(){
         cerr << "Error opening file for reading!\n";
     }
     cout << "Hash Identifier is running... Don't shutdown or exit!" << endl;
-    // cout << "----------------" << endl;
-    // cout << "Enter the hash to identify: ";
-    // string s;
-    // getline(cin,s);
 }
