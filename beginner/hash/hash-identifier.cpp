@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
 #include "prefix.h"
 ifstream inFile("hash-code.txt");
 ofstream outFile("result.txt");
