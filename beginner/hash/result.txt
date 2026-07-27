@@ -1,0 +1,15 @@
+8743b52063cd84097a65d1633f5c74f5
+Result: MD5/NTLM/MD4/RIPEMD128
+----------------
+b89eaac7e61417341b710b727768294d0e6a277b
+Result: SHA1
+----------------
+$6$qdMgClgO2dQWB37F$jhexCX1SdsCAi0OZmoRVAPnWSwuP/mHVhXIMJfKlaacxFkwWLDZ0ViF8Ur3WcHashcatVp2WShcEILi8QZCbt/
+Result: SHA512crypt
+----------------
+$DCC2$10240#tom#e4e938d12fe5974dc42a90120bd9c90f
+Result: Domain Cached Credentials 2 (DCC2), MS Cache 2
+----------------
+$2a$05$LhayLxezLhK1LhWvKxCyLOj0j1u.Kj0jZ0pEmm134uzrQlFvQJLF6 
+Result: Blowfish/bycrypt
+----------------

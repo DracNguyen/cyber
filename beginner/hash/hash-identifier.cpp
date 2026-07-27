@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 #include "prefix.h"
+ifstream inFile("hash-code.txt");
+ofstream outFile("result.txt");
 
 bool prefix_match(string s){
     size_t pos = s.find("$");
@@ -8,10 +10,9 @@ bool prefix_match(string s){
     }
     size_t pos2 = s.find("$", pos+1);
     string prefix = s.substr(pos+1, pos2-pos-1);
-    // cout<<prefix<<endl;
     map<string, string>::iterator it = hash_types_prefix.find(prefix);
     if(it != hash_types_prefix.end()){
-        cout << it->second << endl;
+        outFile << it->second << endl;
         return 1;
     }
     return 0;
@@ -20,44 +21,63 @@ bool prefix_match(string s){
 bool special_match(string s){
     size_t pos = s.find("::");
     if(pos != string::npos){
-        cout<<"NetNTLM" << endl;
+        outFile<<"NetNTLM" << endl;
         return 1;
     }
     return 0;
 }
 
 int main(){
-    cout << "Hash Identifier" << endl;
-    cout << "----------------" << endl;
-    cout << "Enter the hash to identify: ";
-    string s;
-    getline(cin,s);
-    int n = s.length();
-    cout << "Result: ";
-    if(prefix_match(s)){
-        return 0;
-    }
-    if(special_match(s)){
-        return 0;
-    }
+    string line;
     
-    switch(n){
-        case 32:
-            cout << "MD5/NTLM/MD4/RIPEMD128" << endl;
-            break;
-        case 40:
-            cout << "SHA1" << endl;
-            break;
-        case 64:
-            cout << "SHA256" << endl;
-            break;
-        case 96:
-            cout << "SHA384" << endl;
-            break;
-        case 128:
-            cout << "SHA512" << endl;
-            break;
-        default:
-            cout << "Unknown Hash Type" << endl;
+    if (inFile.is_open()) {
+        while (getline(inFile, line)) {
+            if (outFile.is_open()) {
+                outFile << line << "\n";
+                outFile << "Result: ";
+            } else {
+                cerr << "Error opening file for writing!\n";
+            }
+            int n = line.length();
+            if(prefix_match(line)){
+                outFile << "----------------" << endl;
+                continue;
+            }
+            if(special_match(line)){
+                outFile << "----------------" << endl;
+                continue;
+            }
+            
+            switch(n){
+                case 32:
+                outFile << "MD5/NTLM/MD4/RIPEMD128" << endl;
+                break;
+                case 40:
+                outFile << "SHA1" << endl;
+                break;
+                case 64:
+                outFile << "SHA256" << endl;
+                break;
+                case 96:
+                outFile << "SHA384" << endl;
+                break;
+                case 128:
+                outFile << "SHA512" << endl;
+                break;
+                default:
+                outFile << "Unknown Hash Type" << endl;
+            }
+            outFile << "----------------" << endl;
+        }
+        inFile.close(); // Close the file stream
+
+        outFile.close(); // Close the file stream
+    } else {
+        cerr << "Error opening file for reading!\n";
     }
+    cout << "Hash Identifier is running... Don't shutdown or exit!" << endl;
+    // cout << "----------------" << endl;
+    // cout << "Enter the hash to identify: ";
+    // string s;
+    // getline(cin,s);
 }
