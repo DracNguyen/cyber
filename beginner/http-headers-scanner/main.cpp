@@ -1,9 +1,12 @@
 #include<bits/stdc++.h>
-
+#include "headercheck.h"
+#include<curl/curl.h>
 using namespace std;
 
 ifstream inFile("http-check.txt");
 ofstream outFile("result.txt");
+
+
 
 int main(){
     string line;
@@ -20,7 +23,6 @@ int main(){
             outFile << "----------------" << endl;
         }
         inFile.close(); // Close the file stream
-
         outFile.close(); // Close the file stream
     } else {
         cerr << "Error opening file for reading!\n";
