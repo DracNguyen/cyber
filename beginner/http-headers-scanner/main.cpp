@@ -1,109 +1,81 @@
 #include<bits/stdc++.h>
-#include "headercheck.h"
+#include "assessment.h"
 #include<fstream>
 #include<sstream>
-#include<algorithm>
 #include<cctype>
-#include<curl/curl.h>
 using namespace std;
 
 ifstream inFile("http-check.txt");
 ofstream outFile("result.txt");
 
-struct ScanResult{
-    string url;
-    bool reachable = false;
-    long httpStatus = 0;
-    double totalTimeMs = 0.0;
-    map<string,string>headers;
-    string errorMessage;
-};
-static size_t headerCallback (char* buffer, size_t size, size_t nitems, void* userdata){
-    size_t totalSize = size * nitems;
-    auto* headers = static_cast<map<string,string>*>(userdata);
-
-    string line(buffer,totalSize);
-    while(!line.empty() && (line.back() == '\r'|| line.back()=='\n')){
-        line.pop_back();
+void printReport(const ScanResult& r){
+    cout<<"======================================"<<endl;
+    cout<<"URL: "<<r.url<<endl;
+    if(!r.reachable){
+        cout<<" [ERROR] Cannot connect to: "<<r.errorMessage<<endl;
+        return;
     }
+    cout<<"HTTP Status : "<<r.httpStatus<<endl;
+    cout<<"Time        : "<<r.totalTimeMs<<endl;
 
-    auto colonPos = line.find(':');
-    if(colonPos != string::npos){
-        string key = line.substr(0,colonPos);
-        string value = line.substr(colonPos +1);
-        size_t start = value.find_first_not_of(" \t");
-        if(start != string::npos) value = value.substr(start);
-
-        transform(key.begin(),key.end(),key.begin(),[](unsigned char c){return tolower(c);});
-        (*headers)[key]=value;
-    }
-    return totalSize;
+    Assessment a = assess(r);
+    double pct = a.maxScore > 0?(100.0 * a.score/a.maxScore):0.0;
+    cout<<"Severity Score: "<<a.score<<"/"<<a.maxScore<<" (" <<pct<<"%) -> Ranked: "<<a.grade<<endl;
+    cout<<"Header Present ("<<a.present.size()<<"):\n";
+    for(const auto& h:a.present) cout<<"  [OK]"<<h<<endl;
+    cout<<"Missing Header (" <<a.missing.size()<<"):\n";
+    for(const auto& h:a.missing) cout<<"  [--]"<<h<<endl;
 }
 
-static size_t discardBody(char* /*ptr*/,size_t size,size_t nmemb, void* /*userdata*/){
-    return size*nmemb;
-}
-
-ScanResult scanUrl(const string& url){
-    ScanResult result;
-    result.url = url;
-
-    CURL* curl = curl_easy_init();
-    if(!curl){
-        result.errorMessage = "Failed to initialize CURL";
-        return result;
+vector<string> loadUrls(const string& path){
+    vector<string> urls;
+    if(!inFile.is_open()){
+        cerr<<"Unable to open file: "<<path<<endl;
+        return urls;
     }
-    char errbuf[CURL_ERROR_SIZE] = {0};
-    curl_easy_setopt(curl,CURLOPT_URL,url.c_str());
-    curl_easy_setopt(curl,CURLOPT_FOLLOWLOCATION,1L);
-    curl_easy_setopt(curl,CURLOPT_MAXREDIRS,5L);
-    curl_easy_setopt(curl,CURLOPT_TIMEOUT,10L);
-    curl_easy_setopt(curl,CURLOPT_CONNECTTIMEOUT,5L);
-    curl_easy_setopt(curl,CURLOPT_NOSIGNAL,1L);
-    curl_easy_setopt(curl,CURLOPT_SSL_VERIFYPEER,2L);
-    curl_easy_setopt(curl,CURLOPT_SSL_VERIFYHOST,2l);
-    curl_easy_setopt(curl,CURLOPT_USERAGENT,"http-seciruty-scanner/1.0");
-    curl_easy_setopt(curl,CURLOPT_ERRORBUFFER,errbuf);
-
-    curl_easy_setopt(curl,CURLOPT_HEADERFUNCTION,headerCallback);
-    curl_easy_setopt(curl,CURLOPT_HEADERDATA,&result.headers);
-
-    curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,discardBody);
-    curl_easy_setopt(curl,CURLOPT_WRITEDATA, nullptr);
-
-    CURLcode res = curl_easy_perform(curl);
-
-    if(res == CURLE_OK){
-        result.reachable =true;
-        curl_easy_getinfo(curl,CURLINFO_RESPONSE_CODE,&result.httpStatus);
-        curl_easy_getinfo(curl,CURLINFO_TOTAL_TIME,&result.totalTimeMs);
-        result.totalTimeMs *= 1000.0;
-    }else{
-        result.reachable = false;
-        result.errorMessage = errbuf[0]? errbuf:curl_easy_strerror(res);
-    }
-    curl_easy_cleanup(curl);
-    return result;
-}
-
-int main(){
     string line;
-    
-    if (inFile.is_open()) {
-        while (getline(inFile, line)) {
-            if (outFile.is_open()) {
-                outFile << line << "\n";
-                outFile << "Result: ";
-            } else {
-                cerr << "Error opening file for writing!\n";
-            }
-            
-            outFile << "----------------" << endl;
-        }
-        inFile.close(); // Close the file stream
-        outFile.close(); // Close the file stream
-    } else {
-        cerr << "Error opening file for reading!\n";
+    while(getline(inFile,line)){
+        size_t start = line.find_first_not_of(" \t\r\n");
+        size_t end = line.find_last_not_of(" \t\r\n");
+        if(start == string::npos) continue;
+        line = line.substr(start, end-start+1);
+        if(line.empty()||line[0]=='#')continue;
+        urls.push_back(line);
     }
-    cout << "HTTP Scanneris running... Don't shutdown or exit!" << endl;
+    return urls;
+}
+
+
+int main(int argc, char** argv){
+    if(argc<2){
+        cerr<<"How to use: "<<argv[0]<<" <file_contains_paths_url>\n";
+        cerr<<"Sample file urls.txt:\n";
+        cerr<<" https://example.com\n https://github.com\n";
+        return 1;
+    }
+    vector<string>urls = loadUrls(argv[1]);
+    if(urls.empty()){
+        cerr<<"Have no urls to scan.\n";
+        return 1;
+    }
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+
+    vector<ScanResult> results;
+    for(const auto& url:urls){
+        cout<<"Scanning: "<<url<<"...\n";
+        results.push_back(scanUrl(url));
+    }
+
+    cout<<"\n===============DETAILED REPORT================\n";
+    for(const auto& r:results){
+        printReport(r);
+    }
+
+    cout<<"\n===============SUMMARY REPORT================\n";
+    cout<<"Summary of scanned urls: "<<results.size()<<endl;
+    int reachableCount = 0;
+    for(const auto& r:results) if (r.reachable) reachableCount++;
+    cout<<"Accessible urls: "<<reachableCount<<"/"<<results.size()<<endl;
+    curl_global_cleanup();
+    return 0;
 }
