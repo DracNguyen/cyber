@@ -1,0 +1,66 @@
+
+===============DETAILED REPORT================
+======================================
+URL: https://dracnguyen.github.io/portfolio/
+HTTP Status : 200
+Time        : 256.208
+Severity Score: 30/120 (25%) -> Ranked: F
+Header Present (1):
+  [OK]Strict-Transport-Security (HSTS)
+Missing Header (7):
+  [--]Content-Security-Policy (CSP)
+  [--]X-Content-Type-Options
+  [--]X-Frame-Options
+  [--]X-XSS-Protection
+  [--]Referrer-Policy
+  [--]Permissions-Policy
+  [--]Cross-Origin-Opener-Policy (COOP)
+======================================
+URL: https://www.google.com/
+HTTP Status : 200
+Time        : 346.1
+Severity Score: 30/120 (25%) -> Ranked: F
+Header Present (2):
+  [OK]X-Frame-Options
+  [OK]X-XSS-Protection
+Missing Header (6):
+  [--]Strict-Transport-Security (HSTS)
+  [--]Content-Security-Policy (CSP)
+  [--]X-Content-Type-Options
+  [--]Referrer-Policy
+  [--]Permissions-Policy
+  [--]Cross-Origin-Opener-Policy (COOP)
+======================================
+URL: https://github.com/
+HTTP Status : 200
+Time        : 411.322
+Severity Score: 110/120 (91.6667%) -> Ranked: A
+Header Present (6):
+  [OK]Strict-Transport-Security (HSTS)
+  [OK]Content-Security-Policy (CSP)
+  [OK]X-Content-Type-Options
+  [OK]X-Frame-Options
+  [OK]X-XSS-Protection
+  [OK]Referrer-Policy
+Missing Header (2):
+  [--]Permissions-Policy
+  [--]Cross-Origin-Opener-Policy (COOP)
+======================================
+URL: https://www.linkedin.com/in/nguyen-cse
+HTTP Status : 999
+Time        : 794.07
+Severity Score: 90/120 (75%) -> Ranked: C
+Header Present (4):
+  [OK]Strict-Transport-Security (HSTS)
+  [OK]Content-Security-Policy (CSP)
+  [OK]X-Content-Type-Options
+  [OK]X-Frame-Options
+Missing Header (4):
+  [--]X-XSS-Protection
+  [--]Referrer-Policy
+  [--]Permissions-Policy
+  [--]Cross-Origin-Opener-Policy (COOP)
+
+===============SUMMARY REPORT================
+Summary of scanned urls: 4
+Accessible urls: 4/4

@@ -9,22 +9,22 @@ ifstream inFile("http-check.txt");
 ofstream outFile("result.txt");
 
 void printReport(const ScanResult& r){
-    cout<<"======================================"<<endl;
-    cout<<"URL: "<<r.url<<endl;
+    outFile<<"======================================"<<endl;
+    outFile<<"URL: "<<r.url<<endl;
     if(!r.reachable){
-        cout<<" [ERROR] Cannot connect to: "<<r.errorMessage<<endl;
+        outFile<<" [ERROR] Cannot connect to: "<<r.errorMessage<<endl;
         return;
     }
-    cout<<"HTTP Status : "<<r.httpStatus<<endl;
-    cout<<"Time        : "<<r.totalTimeMs<<endl;
+    outFile<<"HTTP Status : "<<r.httpStatus<<endl;
+    outFile<<"Time        : "<<r.totalTimeMs<<endl;
 
     Assessment a = assess(r);
     double pct = a.maxScore > 0?(100.0 * a.score/a.maxScore):0.0;
-    cout<<"Severity Score: "<<a.score<<"/"<<a.maxScore<<" (" <<pct<<"%) -> Ranked: "<<a.grade<<endl;
-    cout<<"Header Present ("<<a.present.size()<<"):\n";
-    for(const auto& h:a.present) cout<<"  [OK]"<<h<<endl;
-    cout<<"Missing Header (" <<a.missing.size()<<"):\n";
-    for(const auto& h:a.missing) cout<<"  [--]"<<h<<endl;
+    outFile<<"Severity Score: "<<a.score<<"/"<<a.maxScore<<" (" <<pct<<"%) -> Ranked: "<<a.grade<<endl;
+    outFile<<"Header Present ("<<a.present.size()<<"):\n";
+    for(const auto& h:a.present) outFile<<"  [OK]"<<h<<endl;
+    outFile<<"Missing Header (" <<a.missing.size()<<"):\n";
+    for(const auto& h:a.missing) outFile<<"  [--]"<<h<<endl;
 }
 
 vector<string> loadUrls(const string& path){
@@ -66,16 +66,16 @@ int main(int argc, char** argv){
         results.push_back(scanUrl(url));
     }
 
-    cout<<"\n===============DETAILED REPORT================\n";
+    outFile<<"\n===============DETAILED REPORT================\n";
     for(const auto& r:results){
         printReport(r);
     }
 
-    cout<<"\n===============SUMMARY REPORT================\n";
-    cout<<"Summary of scanned urls: "<<results.size()<<endl;
+    outFile<<"\n===============SUMMARY REPORT================\n";
+    outFile<<"Summary of scanned urls: "<<results.size()<<endl;
     int reachableCount = 0;
     for(const auto& r:results) if (r.reachable) reachableCount++;
-    cout<<"Accessible urls: "<<reachableCount<<"/"<<results.size()<<endl;
+    outFile<<"Accessible urls: "<<reachableCount<<"/"<<results.size()<<endl;
     curl_global_cleanup();
     return 0;
 }
